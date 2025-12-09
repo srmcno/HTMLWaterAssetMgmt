@@ -19,12 +19,13 @@
         /* Specific Header Font */
         .header-font { font-family: 'Gill Sans Nova', sans-serif; }
 
-        body { background: #F3F4F6; min-height: 100vh; margin: 0; }
-        
-        .glass-card { background: rgba(255, 255, 255, 0.95); border: 1px solid #E5E7EB; }
+        body { background: radial-gradient(circle at 10% 20%, #eef2ff, #f8fafc 35%, #f3f4f6); min-height: 100vh; margin: 0; color: #0f172a; }
+
+        .glass-card { background: rgba(255, 255, 255, 0.9); border: 1px solid #E5E7EB; backdrop-filter: blur(8px); }
         .gradient-purple { background: linear-gradient(135deg, #4C1D95 0%, #6D28D9 50%, #7C3AED 100%); }
         .gold-accent { background: linear-gradient(135deg, #D97706 0%, #F59E0B 100%); }
-        
+        .soft-shadow { box-shadow: 0 10px 40px rgba(76, 29, 149, 0.08); }
+
         /* Animations */
         .hover-lift { transition: all 0.3s ease; }
         .hover-lift:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(76, 29, 149, 0.15); }
@@ -477,6 +478,30 @@
                 }
             }
 
+            const viewMeta = {
+                dashboard: {
+                    badge: "Overview",
+                    title: "System health at a glance",
+                    subtitle: "Track risk, value, and upcoming replacements for your water system."
+                },
+                assets: {
+                    badge: "Inventory",
+                    title: "All assets and equipment",
+                    subtitle: `${filtered.length} item${filtered.length === 1 ? "" : "s"} match your current filters.`
+                },
+                replacement: {
+                    badge: "Capital plan",
+                    title: "Plan replacements with confidence",
+                    subtitle: "See cost needs by year and spot overdue assets."
+                },
+                reports: {
+                    badge: "Reports",
+                    title: "Exportable snapshots",
+                    subtitle: "Breakdowns by category and priority for quick sharing."
+                }
+            };
+            const meta = viewMeta[view];
+
             return (
                 <div className="min-h-screen">
                     {/* Dark Blue Header with Custom Font & Embed Logo */}
@@ -519,6 +544,42 @@
                             </div>
                         </div>
                     </nav>
+
+                    <section className="bg-white/80 border-b border-gray-200 shadow-sm">
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                            <div>
+                                <p className="text-xs font-semibold uppercase tracking-widest text-purple-700 flex items-center gap-2">
+                                    <span className="w-2 h-2 rounded-full bg-purple-600"></span>
+                                    {meta?.badge}
+                                </p>
+                                <h1 className="text-2xl font-bold text-gray-900 mt-1">{meta?.title}</h1>
+                                <p className="text-sm text-gray-600 mt-1">{meta?.subtitle}</p>
+                            </div>
+                            <div className="flex flex-wrap gap-3 text-sm">
+                                <div className="glass-card soft-shadow px-4 py-3 rounded-xl flex items-center gap-2">
+                                    <Icon name="package" size="sm" />
+                                    <div>
+                                        <p className="text-xs text-gray-500">Total Assets</p>
+                                        <p className="font-semibold text-gray-900">{stats.total}</p>
+                                    </div>
+                                </div>
+                                <div className="glass-card soft-shadow px-4 py-3 rounded-xl flex items-center gap-2">
+                                    <Icon name="dollar" size="sm" />
+                                    <div>
+                                        <p className="text-xs text-gray-500">Replacement Value</p>
+                                        <p className="font-semibold text-gray-900">${stats.totalValue.toLocaleString()}</p>
+                                    </div>
+                                </div>
+                                <div className="glass-card soft-shadow px-4 py-3 rounded-xl flex items-center gap-2">
+                                    <Icon name="alert" size="sm" />
+                                    <div>
+                                        <p className="text-xs text-gray-500">High Risk</p>
+                                        <p className="font-semibold text-gray-900">{stats.highRisk}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
 
                     <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
                         {view === "dashboard" && <Dashboard stats={stats} assets={enrichedAssets} onViewAssets={() => setView("assets")} />}
@@ -1134,4 +1195,3 @@
     </script>
 </body>
 </html>
-```
